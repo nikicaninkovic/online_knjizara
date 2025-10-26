@@ -1,0 +1,21 @@
+# IDE i editori
+.idea/
+.vscode/
+
+# PHP/Composer
+vendor/
+composer.lock
+
+# Cache i logovi
+cache/
+logs/
+*.log
+
+# Lokalne konfiguracije
+.env
+.env.local
+.env.*.local
+
+# Sistemske datoteke
+.DS_Store
+Thumbs.db
