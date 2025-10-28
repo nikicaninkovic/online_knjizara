@@ -11,4 +11,5 @@ $sort_dir = $_GET['sort_dir'] ?? 'asc';
 $items = books_filter($BOOKS, $q);
 $items = books_sort($items, $sort_by, $sort_dir);
 
+require_once __DIR__ . '/../src/Lib/helpers.php';
 require __DIR__ . '/../Views/books_table.php';

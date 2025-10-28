@@ -1,75 +1,60 @@
 <?php
 declare(strict_types=1);
 /** @var array $items */
+
+require_once __DIR__ . '/../src/Lib/helpers.php'; // bezbedno, jednom
+$page_title = 'Knjige';
+
+require __DIR__ . '/partials/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="sr">
-<head>
-    <meta charset="UTF-8">
-    <title>Knjige</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 24px; }
-        .wrap { max-width: 880px; margin:auto; }
-        header { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom: 16px; }
-        input, select, button, a { padding:6px 8px; }
-        table { border-collapse: collapse; width:100%; }
-        th, td { border:1px solid #ddd; padding:8px; }
-        th { background:#f7f7f7; text-align:left; }
-        .price { text-align:right; white-space:nowrap; }
-    </style>
-</head>
-<body>
-<div class="wrap">
-    <h1>Knjige</h1>
+<h1><?= esc_html($page_title) ?></h1>
 
-    <form method="get">
-        <header>
-            <input name="q" placeholder="pretraga (naslov/autor)" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
-            <select name="sort_by">
-                <?php
-                $sortBy = $_GET['sort_by'] ?? 'naslov';
-                foreach (['naslov'=>'Naslov','autor'=>'Autor','cena'=>'Cena'] as $k=>$label) {
-                    $sel = $k===$sortBy ? 'selected' : '';
-                    echo "<option value=\"$k\" $sel>$label</option>";
-                }
-                ?>
-            </select>
-            <select name="sort_dir">
-                <?php
-                $sortDir = $_GET['sort_dir'] ?? 'asc';
-                foreach (['asc'=>'Rastuće','desc'=>'Opadajuće'] as $k=>$label) {
-                    $sel = $k===$sortDir ? 'selected' : '';
-                    echo "<option value=\"$k\" $sel>$label</option>";
-                }
-                ?>
-            </select>
-            <button>Primeni</button>
-            <a href="?">Reset</a>
-        </header>
-    </form>
+<form method="get">
+    <header class="controls">
+        <input name="q" placeholder="pretraga (naslov/autor)" value="<?= esc_html(get_qs('q')) ?>">
 
-    <table>
-        <thead>
+        <?php
+        $sortBy  = get_qs('sort_by', 'naslov');
+        $sortDir = get_qs('sort_dir', 'asc');
+        ?>
+
+        <select name="sort_by">
+            <option value="naslov" <?= selected('naslov', $sortBy) ?>>Naslov</option>
+            <option value="autor"  <?= selected('autor',  $sortBy) ?>>Autor</option>
+            <option value="cena"   <?= selected('cena',   $sortBy) ?>>Cena</option>
+        </select>
+
+        <select name="sort_dir">
+            <option value="asc"  <?= selected('asc',  $sortDir) ?>>Rastuće</option>
+            <option value="desc" <?= selected('desc', $sortDir) ?>>Opadajuće</option>
+        </select>
+
+        <button>Primeni</button>
+        <a href="?">Reset</a>
+    </header>
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th>Naslov</th>
+        <th>Autor</th>
+        <th class="price">Cena (KM)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($items as $b): ?>
         <tr>
-            <th>Naslov</th>
-            <th>Autor</th>
-            <th class="price">Cena (KM)</th>
+            <td><?= esc_html($b['naslov']) ?></td>
+            <td><?= esc_html($b['autor']) ?></td>
+            <td class="price"><?= esc_html(format_cena((float)$b['cena'])) ?></td>
         </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($items as $b): ?>
-            <tr>
-                <td><?= htmlspecialchars($b['naslov']) ?></td>
-                <td><?= htmlspecialchars($b['autor']) ?></td>
-                <td class="price"><?= number_format((float)$b['cena'], 2, ',', '.') ?></td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+    <?php endforeach; ?>
+    </tbody>
+</table>
 
-    <p style="margin-top:10px;color:#666">
-        Izvor: <b>PHP niz</b>. U sledećim danima prelazimo na MySQL (isti UI).
-    </p>
-</div>
-</body>
-</html>
+<p style="margin-top:10px;color:#666">
+    Izvor: <b>PHP niz</b>. U sledećim danima prelazimo na MySQL (isti UI).
+</p>
+
+<?php require __DIR__ . '/partials/footer.php'; ?>
